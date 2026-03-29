@@ -2,7 +2,7 @@
   <section class="hero">
     <!-- Main heading with cyberpunk glitch effect -->
     <h1 class="glitch-text">
-      <span class="text-main">Quer namorar</span>
+      <span class="text-main">Nicole namorar</span>
       <span class="text-accent">comigo?</span>
     </h1>
     <!-- Romantic subtitle with hearts -->
