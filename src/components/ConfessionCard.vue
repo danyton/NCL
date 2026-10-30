@@ -3,14 +3,11 @@
     <div class="card-wrapper">
       <div class="card">
         <div class="card-content">
-          <!-- Main question -->
           <p class="question">Você toparia estar comigo?</p>
-          
-          <!-- Action buttons -->
+
           <div class="buttons-container">
-            <!-- Yes button - always visible and clickable -->
-            <button 
-              class="btn btn-yes" 
+            <button
+              class="btn btn-yes"
               @click="() => onAnswer(true)"
               :disabled="isAnswered"
               aria-label="Aceitar proposta"
@@ -19,16 +16,17 @@
               <span class="btn-glow"></span>
             </button>
 
-            <!-- No button - moves away from cursor/touch -->
             <div class="no-button-wrapper" ref="noButtonWrapper">
-              <button 
-                class="btn btn-no" 
+              <button
+                class="btn btn-no"
                 @click="moveButton"
                 @mouseover="moveButton"
+                @mouseenter="moveButton"
                 @touchstart.prevent="moveButton"
-                :style="{ 
-                  left: `${localNoPosition.x}px`, 
-                  top: `${localNoPosition.y}px` 
+                @focus="moveButton"
+                :style="{
+                  left: `${localNoPosition.x}px`,
+                  top: `${localNoPosition.y}px`
                 }"
                 :disabled="isAnswered"
                 aria-label="Recusar proposta"
@@ -45,19 +43,9 @@
 </template>
 
 <script setup>
-/**
- * ConfessionCard Component
- * Displays the confession card with yes/no buttons
- * Features:
- *  - Yes button: Fixed, clickable for accepting
- *  - No button: Moves away from cursor/touch
- *  - Accessibility: ARIA labels and disabled states
- *  - Animations: Smooth transitions and glow effects
- */
 import { ref } from 'vue'
 
 const props = defineProps({
-  // Whether user has already answered
   isAnswered: {
     type: Boolean,
     default: false,
@@ -69,30 +57,28 @@ const emit = defineEmits(['answer'])
 const noButtonWrapper = ref(null)
 const localNoPosition = ref({ x: 0, y: 0 })
 
-// Handle answer selection
 const onAnswer = (answer) => {
   if (!props.isAnswered) {
     emit('answer', answer)
   }
 }
 
-// Move the No button away from cursor/touch
 const moveButton = () => {
   if (props.isAnswered) return
 
   const wrapper = noButtonWrapper.value
   if (!wrapper) return
 
-  // Get container dimensions
   const rect = wrapper.getBoundingClientRect()
-  const maxX = wrapper.offsetWidth - 150
-  const maxY = wrapper.offsetHeight - 50
-  
-  // Generate random position
+  const buttonWidth = 150
+  const buttonHeight = 52
+
+  const maxX = Math.max(0, rect.width - buttonWidth)
+  const maxY = Math.max(0, rect.height - buttonHeight)
+
   const randomX = Math.random() * maxX
   const randomY = Math.random() * maxY
 
-  // Update button position
   localNoPosition.value = {
     x: Math.max(0, Math.min(randomX, maxX)),
     y: Math.max(0, Math.min(randomY, maxY)),
@@ -114,19 +100,19 @@ const moveButton = () => {
 .card-wrapper {
   perspective: 1000px;
   width: 100%;
-  max-width: 500px;
+  max-width: 540px;
 }
 
 .card {
-  background: linear-gradient(135deg, rgba(19, 56, 106, 0.8), rgba(131, 56, 236, 0.3));
-  border: 2px solid var(--neon-cyan);
-  border-radius: 15px;
-  backdrop-filter: blur(10px);
+  background: linear-gradient(135deg, rgba(19, 56, 106, 0.92), rgba(131, 56, 236, 0.34));
+  border: 2px solid rgba(0, 245, 255, 0.7);
+  border-radius: 24px;
+  backdrop-filter: blur(12px);
   padding: 2rem;
-  box-shadow: 
-    0 0 20px rgba(0, 245, 255, 0.3),
-    inset 0 0 20px rgba(131, 56, 236, 0.1);
-  animation: cardFloat 3s ease-in-out infinite;
+  box-shadow:
+    0 0 28px rgba(0, 245, 255, 0.18),
+    inset 0 0 22px rgba(131, 56, 236, 0.13);
+  animation: cardFloat 3.4s ease-in-out infinite;
   transform-style: preserve-3d;
 }
 
@@ -135,127 +121,137 @@ const moveButton = () => {
 }
 
 .question {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--neon-pink);
+  font-size: clamp(1.4rem, 2.2vw, 1.8rem);
+  font-weight: 700;
+  color: #ff7ac6;
   margin-bottom: 2rem;
-  text-shadow: 0 0 10px var(--neon-pink);
+  text-shadow: 0 0 14px rgba(255, 106, 180, 0.6);
 }
 
 .buttons-container {
   display: flex;
-  gap: 2rem;
+  gap: 1.5rem;
   justify-content: center;
+  align-items: center;
   flex-wrap: wrap;
   position: relative;
+  min-height: 110px;
 }
 
 .btn {
   position: relative;
-  padding: 0.75rem 2rem;
+  padding: 0.9rem 2rem;
   font-size: 1rem;
-  font-weight: 600;
-  border: 2px solid;
-  border-radius: 50px;
+  font-weight: 700;
+  border: 2px solid transparent;
+  border-radius: 999px;
   cursor: pointer;
-  transition: all var(--transition);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.08em;
   z-index: 1;
   overflow: hidden;
 }
 
+.btn:focus-visible {
+  outline: 3px solid rgba(0, 245, 255, 0.8);
+  outline-offset: 4px;
+}
+
 .btn:disabled {
   cursor: not-allowed;
-  opacity: 0.6;
+  opacity: 0.7;
 }
 
-/* Yes Button - Acceptance */
 .btn-yes {
-  border-color: var(--neon-pink);
-  color: var(--neon-pink);
-  background: rgba(255, 0, 110, 0.1);
-  box-shadow: 0 0 20px rgba(255, 0, 110, 0.5);
+  border-color: rgba(255, 0, 110, 0.9);
+  color: #fff;
+  background: linear-gradient(135deg, #ff006e, #ff4fa3);
+  box-shadow: 0 0 22px rgba(255, 0, 110, 0.35);
 }
 
-.btn-yes:hover:not(:disabled) {
-  background: var(--neon-pink);
-  color: white;
-  transform: scale(1.1) translateY(-2px);
-  box-shadow: 0 0 30px var(--neon-pink);
+.btn-yes:hover:not(:disabled),
+.btn-yes:focus-visible:not(:disabled) {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 0 30px rgba(255, 0, 110, 0.5);
 }
 
-/* No Button - Refusal (with chase effect) */
 .btn-no {
-  border-color: var(--neon-cyan);
-  color: var(--neon-cyan);
-  background: rgba(0, 245, 255, 0.1);
-  box-shadow: 0 0 20px rgba(0, 245, 255, 0.5);
   position: absolute;
+  border-color: rgba(0, 245, 255, 0.9);
+  color: #dffcff;
+  background: linear-gradient(135deg, rgba(21, 134, 217, 0.92), rgba(113, 89, 255, 0.9));
+  box-shadow: 0 0 18px rgba(0, 245, 255, 0.25);
+  transition: left 0.18s ease, top 0.18s ease, transform 0.18s ease;
 }
 
-.btn-no:not(:disabled) {
-  transition: left var(--transition), top var(--transition);
-  cursor: grab;
-}
-
-.btn-no:hover:not(:disabled) {
-  box-shadow: 0 0 30px var(--neon-cyan);
-  transform: scale(1.05);
+.btn-no:hover:not(:disabled),
+.btn-no:focus-visible:not(:disabled) {
+  transform: scale(1.04);
 }
 
 .no-button-wrapper {
   position: relative;
-  width: 150px;
-  height: 50px;
+  width: 180px;
+  height: 62px;
+}
+
+.btn-text {
+  position: relative;
+  z-index: 2;
 }
 
 .btn-glow {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: 50px;
-  pointer-events: none;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 20%, rgba(255,255,255,0.24), transparent 80%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.btn:hover .btn-glow,
+.btn:focus-visible .btn-glow {
+  opacity: 1;
 }
 
 @keyframes cardFloat {
   0%, 100% {
-    transform: translateY(0px) rotateX(0deg);
+    transform: translateY(0) rotateX(0deg);
   }
   50% {
-    transform: translateY(-10px) rotateX(2deg);
+    transform: translateY(-8px) rotateX(2deg);
   }
 }
 
 @media (max-width: 768px) {
-  .card {
-    padding: 1.5rem;
+  .confession-card {
+    padding: 1.25rem 0.75rem;
   }
 
-  .question {
-    font-size: 1.25rem;
-    margin-bottom: 1.5rem;
+  .card {
+    padding: 1.5rem 1rem;
   }
 
   .buttons-container {
-    gap: 1.5rem;
     flex-direction: column;
+    gap: 1rem;
+    min-height: 170px;
   }
 
   .no-button-wrapper {
     width: 100%;
-    height: auto;
-  }
-
-  .btn-no {
-    position: static !important;
-    width: 100%;
+    height: 70px;
   }
 
   .btn {
     width: 100%;
+  }
+
+  .btn-no {
+    position: absolute;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%);
   }
 }
 </style>
