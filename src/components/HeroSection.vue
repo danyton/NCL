@@ -1,10 +1,10 @@
 <template>
   <section class="hero">
     <h1 class="glitch-text">
-      <span class="text-main">Nicole namorar</span>
-      <span class="text-accent">comigo?</span>
+      <span class="text-main">Você quer</span>
+      <span class="text-accent">ficar comigo?</span>
     </h1>
-    <div class="subtitle">💜 Uma pergunta especial 💜</div>
+    <div class="subtitle">💜 O meu coração já escolheu você 💜</div>
   </section>
 </template>
 

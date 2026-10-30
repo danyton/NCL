@@ -1,16 +1,11 @@
 <template>
   <footer class="footer">
-    <p>Desenvolvido com 💜 by Heverton Freire Barbosa</p>
-    <p class="modernized">Modernizado em 2025</p>
+    <p>Feito com muito amor 💜</p>
+    <p class="modernized">Para a pessoa que iluminou meu mundo</p>
   </footer>
 </template>
 
 <script setup>
-/**
- * AppFooter Component
- * Displays footer with credits and information
- * Appears at the bottom of the page
- */
 </script>
 
 <style scoped>
@@ -31,7 +26,7 @@
 .modernized {
   color: var(--neon-cyan);
   font-size: 0.8rem;
-  opacity: 0.7;
+  opacity: 0.8;
 }
 
 @media (max-width: 768px) {
